@@ -45,6 +45,12 @@ class CompanyListView(APIView):
 
 # retrive single company detail and perform put and delete oprations
 class CompanyDetailView(APIView):
+      """
+      GET -> public
+      DELETE -> Admin only
+      PATCH -> Admin only
+
+      """
       
       # get object
       def get_object(self,pk):
@@ -93,6 +99,11 @@ class CompanyDetailView(APIView):
       
       # update company detail using patch onyl admin can
       def patch(self,request,pk):
+            if not request.user.is_staff:
+                  return Response(
+                        {"error" : "Only admin can update/edit company"},
+                        status=status.HTTP_403_FORBIDDEN
+                  )
 
             company = self.get_object(pk)
             if not company:
